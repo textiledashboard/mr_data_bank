@@ -1,0 +1,28 @@
+/* Step 13 — Category-first File Data browser */
+.category-overview-search{position:relative;width:min(100%,310px)}
+.category-overview-search>i{position:absolute;left:13px;top:50%;transform:translateY(-50%);z-index:1;color:#8290a5}
+.category-overview-search .form-control{padding-left:38px;min-height:40px}
+.category-card-col{display:flex}
+.file-category-card{width:100%;border:1px solid #e5ebf3;background:#fff;border-radius:15px;padding:18px;text-align:left;display:flex;flex-direction:column;gap:14px;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;min-height:220px;color:inherit}
+.file-category-card:hover,.file-category-card:focus-visible{border-color:#9bb8e8;box-shadow:0 10px 30px rgba(31,95,174,.10);transform:translateY(-2px);outline:none}
+.file-category-card-top{display:flex;align-items:flex-start;gap:12px}
+.file-category-icon{width:46px;height:46px;border-radius:13px;background:#edf4ff;color:#2861a8;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0}
+.file-category-title{font-size:1rem;font-weight:800;color:#23344d;margin:1px 0 5px}
+.file-category-description{font-size:.8rem;color:#718096;line-height:1.45;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.file-category-count{display:flex;align-items:baseline;gap:7px;margin-top:auto}
+.file-category-count strong{font-size:1.55rem;line-height:1.1;letter-spacing:-.04em;color:#204f8d}
+.file-category-count span{font-size:.78rem;color:#718096}
+.file-category-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid #edf1f6;padding-top:12px}
+.file-category-subcats{display:flex;gap:5px;flex-wrap:wrap}
+.file-category-chip{font-size:.68rem;border-radius:99px;background:#f4f7fb;border:1px solid #e6ecf4;color:#66758c;padding:4px 7px;white-space:nowrap}
+.file-category-open{font-size:.76rem;font-weight:700;color:#3769ad;white-space:nowrap}
+.category-overview-empty{border:1px dashed #d5dfec;border-radius:12px;padding:35px 15px;text-align:center;color:#738198}
+.category-overview-empty>i{font-size:1.4rem;display:block;margin-bottom:8px}
+.category-overview-empty>strong,.category-overview-empty>span{display:block}
+.category-overview-empty>span{font-size:.8rem;margin-top:4px}
+.file-detail-breadcrumb{display:flex;align-items:center;gap:8px;font-size:.73rem;color:#8190a5;margin-bottom:6px}
+.file-detail-breadcrumb i{font-size:.62rem}
+.file-detail-breadcrumb strong{color:#3565a5}
+@media(max-width:767.98px){.category-overview-search{width:100%}.file-category-card{min-height:200px}.file-category-card .file-category-title{font-size:.95rem}.file-category-count strong{font-size:1.4rem}}
+
+.file-category-chip.is-pending{background:#fff3d7;border-color:#f1dfb5;color:#875a04}
