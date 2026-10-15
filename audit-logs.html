@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MR Data Bank Audit Logs and Activity History demo">
+<title>Audit Logs | MR Data Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="assets/css/layout.css" rel="stylesheet">
+<style>
+.audit-stat{padding:17px 19px;height:100%;display:flex;align-items:center;gap:13px}
+.audit-stat .stat-icon{width:42px;height:42px;flex:0 0 auto}
+.audit-stat .stat-value{font-size:24px;margin-top:3px}
+.audit-stat .stat-label{font-size:11px}
+.filter-label{font-size:10px;color:#6b7788;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:6px}
+.form-control,.form-select,.input-group-text{font-size:12px;border-color:#e2e8f0}
+.form-control:focus,.form-select:focus{border-color:#9fc3f1;box-shadow:0 0 0 .2rem rgba(31,95,174,.09)}
+.audit-event{font-size:12px;font-weight:800;color:#26374d}
+.audit-event-meta{font-size:10px;color:#7b8796;margin-top:4px}
+.actor-avatar{height:34px;width:34px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;background:#eaf2fc;color:#1f5fae;font-size:10px;font-weight:800}
+.actor-name{font-size:11px;font-weight:800;color:#26374d}
+.actor-role{font-size:10px;color:#7b8796;margin-top:3px}
+.module-tag{display:inline-block;font-size:9px;padding:4px 7px;border-radius:6px;background:#eef5ff;color:#275b9c;font-weight:800;white-space:nowrap}
+.outcome-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}
+.outcome-pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.outcome-success{background:#e8f8ef;color:#18804b}
+.outcome-warning{background:#fff5df;color:#9a6700}
+.outcome-failed{background:#fff0ed;color:#b42318}
+.outcome-info{background:#eaf2fc;color:#1f5fae}
+.severity-pill{font-size:9px;font-weight:800;border-radius:5px;padding:4px 6px;white-space:nowrap}
+.severity-low{background:#edf1f6;color:#637083}.severity-medium{background:#fff5df;color:#9a6700}.severity-high{background:#fff0ed;color:#b42318}
+.action-btn{width:31px;height:31px;display:inline-grid;place-items:center;border:1px solid #e5ebf2;background:#fff;color:#607086;border-radius:8px}
+.action-btn:hover{color:#1f5fae;background:#edf5ff;border-color:#cce0fb}
+.audit-empty{padding:46px 20px;text-align:center;color:#7b8796}.audit-empty i{font-size:30px;color:#aab8c9}
+.audit-count{font-size:11px;color:#718096}
+.audit-note{border:1px solid #d7e9dc;background:#f1faf4;color:#23613c;border-radius:12px;padding:12px;display:flex;gap:9px;font-size:11px;line-height:1.6}
+.event-detail{border:1px solid #edf1f6;border-radius:11px;padding:12px;height:100%;background:#fff}
+.detail-label{color:#7b8796;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:4px}
+.detail-value{font-size:12px;font-weight:700;overflow-wrap:anywhere}
+.event-description{font-size:12px;line-height:1.7;color:#4b596c;white-space:pre-wrap}
+.integrity-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:13px}.integrity-step:last-child{margin-bottom:0}
+.integrity-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:#eef5ff;color:#1f5fae;flex:0 0 auto}
+.integrity-title{font-size:11px;font-weight:800}.integrity-copy{font-size:10px;line-height:1.55;color:#7b8796;margin-top:3px}
+@media(max-width:767.98px){.page-content{padding:18px 12px}.panel-header{align-items:flex-start;flex-direction:column}.panel-header .header-actions{width:100%;display:flex}.panel-header .header-actions .btn{flex:1}.audit-stat{padding:14px 12px;gap:9px}.audit-stat .stat-value{font-size:21px}}
+</style>
+</head>
+<body data-page="audit">
+<div class="app-shell">
+<aside class="sidebar" aria-label="Main navigation">
+<div class="brand"><div class="brand-mark"><i class="bi bi-layers-half"></i></div><div class="brand-copy"><div class="brand-name">MR DATA BANK</div><span class="brand-sub">Market Research Division</span></div></div>
+<div class="sidebar-scroll" id="desktopSidebarContent">
+<div class="nav-caption">WORKSPACE</div>
+<a class="sidebar-link" href="index.html" data-page="dashboard" title="Dashboard"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+<a class="sidebar-link" href="data-bank.html" data-page="files" title="File Data"><i class="bi bi-folder2-open"></i><span>File Data</span></a>
+<a class="sidebar-link" href="upload-files.html" data-page="upload" title="Upload Files"><i class="bi bi-cloud-arrow-up"></i><span>Upload Files</span></a>
+<a class="sidebar-link" href="categories-management.html" data-page="categories" title="Categories"><i class="bi bi-tags"></i><span>Categories</span></a>
+<div class="nav-caption">INDUSTRY &amp; OUTREACH</div>
+<a class="sidebar-link" href="industry-directory.html" data-page="industry" title="Industry Directory"><i class="bi bi-buildings"></i><span>Industry Directory</span></a>
+<a class="sidebar-link" href="email-communication.html" data-page="email" title="Email Communication"><i class="bi bi-envelope-paper"></i><span>Email Communication</span></a>
+<div class="nav-caption">MY WORKSPACE</div>
+<a class="sidebar-link" href="#" data-page="my-uploads" title="My Uploads" data-demo-action="My Uploads will be connected to user accounts later."><i class="bi bi-cloud-upload"></i><span>My Uploads</span></a>
+<a class="sidebar-link" href="#" data-page="favorites" title="Favorites" data-demo-action="Favorites will be connected to saved records later."><i class="bi bi-star"></i><span>Favorites</span></a>
+<a class="sidebar-link" href="#" data-page="recent" title="Recently Viewed" data-demo-action="Recently Viewed will be connected to activity history later."><i class="bi bi-clock-history"></i><span>Recently Viewed</span></a>
+<div class="nav-caption">ADMINISTRATION</div>
+<a class="sidebar-link" href="user-management.html" data-page="users" title="User Management"><i class="bi bi-people"></i><span>User Management</span></a>
+<a class="sidebar-link" href="user-management.html#permissions" data-page="permissions" title="Permissions"><i class="bi bi-shield-lock"></i><span>Permissions</span></a>
+<a class="sidebar-link" href="migration-backup.html" data-page="migration" title="Migration &amp; Backup"><i class="bi bi-arrow-repeat"></i><span>Migration &amp; Backup</span></a>
+<a class="sidebar-link" href="audit-logs.html" data-page="audit" title="Audit Logs"><i class="bi bi-journal-text"></i><span>Audit Logs</span></a>
+</div>
+<div class="sidebar-footer"><div class="d-flex align-items-center gap-2 justify-content-center justify-content-lg-start"><i class="bi bi-shield-check fs-5"></i><div class="sidebar-footer-copy"><div class="fw-bold small text-white">Secure Workspace</div><div class="small">Phase 1 · Pilot UI</div></div></div></div>
+</aside>
+<div class="main-area">
+<header class="topbar">
+<button class="icon-btn mobile-menu-button" id="mobileMenuToggle" type="button" aria-label="Open navigation" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></button>
+<button class="icon-btn d-none d-lg-inline-grid" id="sidebarToggle" type="button" aria-label="Collapse or expand sidebar" title="Collapse sidebar"><i class="bi bi-layout-sidebar-inset"></i></button>
+<div class="global-search"><i class="bi bi-search"></i><input class="form-control" id="globalSearch" type="search" placeholder="Search actor, action, record..." aria-label="Search audit events"></div>
+<div class="topbar-spacer"></div>
+<div class="notification-wrap"><button class="icon-btn" type="button" data-demo-action="Notifications panel is a frontend demo." aria-label="Notifications"><i class="bi bi-bell"></i></button><span class="notification-dot"></span></div>
+<div class="dropdown"><button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false"><div class="avatar">SS</div><div class="profile-copy"><div class="profile-name">Soheb Siddique</div><div class="profile-role">Administrator</div></div><i class="bi bi-chevron-down profile-chevron small text-secondary ms-1"></i></button><ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2"><li><h6 class="dropdown-header">Soheb Siddique</h6></li><li><a class="dropdown-item" href="#" data-demo-action="Profile settings are not connected yet."><i class="bi bi-person me-2"></i>My Profile</a></li><li><a class="dropdown-item" href="#" data-demo-action="Settings are not connected yet."><i class="bi bi-gear me-2"></i>Settings</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-danger" href="MR_Data_Bank_Login_UI/admin-login.html"><i class="bi bi-box-arrow-right me-2"></i>Logout (demo)</a></li></ul></div>
+</header>
+<main class="page-content">
+<div class="page-heading"><div><nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active" aria-current="page">Audit Logs</li></ol></nav><h1 class="page-title">Audit Logs &amp; Activity History</h1><div class="page-subtitle">Review important user and system events across the MR Data Bank.</div></div><div class="heading-actions d-flex gap-2"><button class="btn btn-soft btn-sm px-3" id="exportAuditButton"><i class="bi bi-download me-1"></i>Export CSV</button><button class="btn btn-primary btn-sm px-3" id="refreshAuditButton"><i class="bi bi-arrow-clockwise me-1"></i>Refresh view</button></div></div>
+<div class="alert alert-primary border-0 d-flex gap-2 align-items-start py-3 mb-4" role="note" style="background:#eaf2fc;color:#234c80"><i class="bi bi-info-circle-fill mt-1"></i><div class="small"><strong>Demo mode:</strong> these audit records are illustrative. Filters, event details and CSV export work in the browser, but this page is not yet connected to a persistent, server-side audit store.</div></div>
+<div class="row g-3 mb-4">
+<div class="col-6 col-xl-3"><div class="card-panel audit-stat"><div class="stat-icon"><i class="bi bi-journal-check"></i></div><div><div class="stat-label">Events shown</div><div class="stat-value" id="statEvents">0</div></div></div></div>
+<div class="col-6 col-xl-3"><div class="card-panel audit-stat"><div class="stat-icon" style="background:#e8f8ef;color:#198754"><i class="bi bi-check-circle"></i></div><div><div class="stat-label">Successful events</div><div class="stat-value" id="statSuccess">0</div></div></div></div>
+<div class="col-6 col-xl-3"><div class="card-panel audit-stat"><div class="stat-icon" style="background:#fff5df;color:#9a6700"><i class="bi bi-exclamation-triangle"></i></div><div><div class="stat-label">Warnings</div><div class="stat-value" id="statWarnings">0</div></div></div></div>
+<div class="col-6 col-xl-3"><div class="card-panel audit-stat"><div class="stat-icon" style="background:#fff0ed;color:#b42318"><i class="bi bi-shield-exclamation"></i></div><div><div class="stat-label">Failed / blocked</div><div class="stat-value" id="statFailed">0</div></div></div></div>
+</div>
+<div class="row g-4 mb-4">
+<div class="col-xl-8"><section class="card-panel h-100"><div class="panel-header"><div><h2 class="panel-title"><i class="bi bi-funnel me-2 text-primary"></i>Filter audit events</h2><div class="panel-subtitle">Narrow the event list by date, actor, module, action type or outcome.</div></div><button class="btn btn-light border btn-sm" id="resetFiltersButton"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset filters</button></div>
+<div class="panel-body"><div class="row g-3">
+<div class="col-12"><div class="filter-label">Search</div><div class="input-group"><span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-secondary"></i></span><input id="auditSearch" class="form-control border-start-0" type="search" placeholder="Event ID, user, email, resource, description..."></div></div>
+<div class="col-6 col-md-3"><div class="filter-label">From date</div><input type="date" class="form-control" id="dateFrom"></div>
+<div class="col-6 col-md-3"><div class="filter-label">To date</div><input type="date" class="form-control" id="dateTo"></div>
+<div class="col-6 col-md-3"><div class="filter-label">Actor</div><select class="form-select" id="actorFilter"><option value="">All actors</option><option>Soheb Siddique</option><option>R. Sharma</option><option>A. Khan</option><option>S. Patel</option><option>M. Das</option><option>System</option></select></div>
+<div class="col-6 col-md-3"><div class="filter-label">Module</div><select class="form-select" id="moduleFilter"><option value="">All modules</option><option>Authentication</option><option>Data Bank</option><option>Upload</option><option>Industry Directory</option><option>Email Communication</option><option>User Management</option><option>Migration</option><option>Backup</option><option>System</option></select></div>
+<div class="col-6 col-md-3"><div class="filter-label">Action type</div><select class="form-select" id="actionFilter"><option value="">All actions</option><option>Login</option><option>Logout</option><option>Upload</option><option>Download</option><option>Preview</option><option>Permission change</option><option>Directory change</option><option>Email prepared</option><option>Migration</option><option>Backup</option><option>Restore request</option><option>Access denied</option></select></div>
+<div class="col-6 col-md-3"><div class="filter-label">Outcome</div><select class="form-select" id="outcomeFilter"><option value="">All outcomes</option><option>Success</option><option>Warning</option><option>Failed</option><option>Blocked</option><option>Info</option></select></div>
+<div class="col-6 col-md-3"><div class="filter-label">Severity</div><select class="form-select" id="severityFilter"><option value="">All severities</option><option>Low</option><option>Medium</option><option>High</option></select></div>
+<div class="col-6 col-md-3"><div class="filter-label">Sort order</div><select class="form-select" id="sortFilter"><option value="newest">Newest first</option><option value="oldest">Oldest first</option></select></div>
+</div></div></section></div>
+<div class="col-xl-4"><section class="card-panel h-100"><div class="panel-header"><div><h2 class="panel-title"><i class="bi bi-shield-lock me-2 text-primary"></i>Audit integrity principles</h2><div class="panel-subtitle">Production requirements to preserve trust in the log.</div></div></div><div class="panel-body">
+<div class="integrity-step"><div class="integrity-icon"><i class="bi bi-database-lock"></i></div><div><div class="integrity-title">Server-side event capture</div><div class="integrity-copy">Record actions in Laravel after authorization and outcome are known—not from client-side display events alone.</div></div></div>
+<div class="integrity-step"><div class="integrity-icon"><i class="bi bi-fingerprint"></i></div><div><div class="integrity-title">Tamper-resistant storage</div><div class="integrity-copy">Restrict write/delete access, protect backups and consider hash chaining or a dedicated append-only log store.</div></div></div>
+<div class="integrity-step"><div class="integrity-icon"><i class="bi bi-person-check"></i></div><div><div class="integrity-title">Actor and context</div><div class="integrity-copy">Capture actor ID, UTC timestamp, action, target record, result, request/correlation ID and approved client context.</div></div></div>
+<div class="integrity-step"><div class="integrity-icon"><i class="bi bi-eye-slash"></i></div><div><div class="integrity-title">Minimize sensitive data</div><div class="integrity-copy">Do not log passwords, session tokens, private keys, full message bodies or sensitive uploaded content.</div></div></div>
+<div class="audit-note mt-3"><i class="bi bi-info-circle-fill fs-5"></i><div>Filters on this page are for demonstration. Production access to logs should be restricted and itself audited.</div></div>
+</div></section></div>
+</div>
+<section class="card-panel mb-4"><div class="panel-header flex-wrap"><div><h2 class="panel-title">Event log</h2><div class="panel-subtitle">View who performed an action, what resource was affected and whether it succeeded.</div></div><div class="header-actions d-flex gap-2"><span class="btn btn-light border btn-sm disabled" id="visibleEventsBadge">0 events</span></div></div>
+<div class="panel-body pb-0"><div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2"><span class="audit-count" id="auditCount">Loading events…</span><span class="audit-count">Sample data · timestamps displayed in local time</span></div></div>
+<div class="table-responsive"><table class="table" id="auditTable"><thead><tr><th class="ps-4">Timestamp</th><th>Actor</th><th>Event / resource</th><th>Module</th><th>Outcome</th><th>Severity</th><th class="pe-4">Details</th></tr></thead><tbody id="auditTableBody"></tbody></table><div class="audit-empty" id="emptyAudit"><i class="bi bi-journal-x d-block mb-2"></i><strong class="d-block text-dark mb-1">No matching audit events</strong><span class="small">Try changing the filters.</span></div></div>
+<div class="panel-body border-top d-flex flex-wrap justify-content-between align-items-center gap-2"><span class="small text-secondary">CSV export includes event metadata currently visible under the selected filters.</span><button class="btn btn-light border btn-sm" id="clearSearchButton">Clear search</button></div></section>
+<div class="footer-note d-flex flex-wrap justify-content-between gap-2"><span>MR Data Bank · Market Research Division</span><span>Phase 1 Pilot UI · © <span id="currentYear"></span></span></div>
+</main></div></div>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel"><div class="offcanvas-header border-bottom border-light border-opacity-10"><div class="fw-bold" id="mobileSidebarLabel"><i class="bi bi-layers-half me-2"></i>MR DATA BANK</div><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div><div class="offcanvas-body p-0"><div class="sidebar h-100"><div class="sidebar-scroll" id="mobileSidebarContent"></div></div></div></div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="demoToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true"><div class="d-flex"><div class="toast-body" id="demoToastBody">Demo action</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div></div>
+<div class="modal fade" id="auditDetailsModal" tabindex="-1" aria-labelledby="auditDetailsTitle" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content border-0 shadow"><div class="modal-header"><div><h2 class="modal-title fs-5 fw-bold" id="auditDetailsTitle">Audit event details</h2><div class="small text-secondary mt-1" id="auditDetailsSubtitle"></div></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body" id="auditDetailsBody"></div><div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Close</button><button class="btn btn-soft" id="copyEventIdButton"><i class="bi bi-clipboard me-1"></i>Copy event ID</button></div></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="assets/js/layout.js"></script><script src="assets/js/audit-logs.js"></script>
+</body></html>

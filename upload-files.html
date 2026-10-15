@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MR Data Bank Phase 1 upload files module demonstration">
+  <title>Upload Files | MR Data Bank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/layout.css" rel="stylesheet">
+  <link href="assets/css/upload-advanced.css" rel="stylesheet">
+  <style>
+    .upload-zone{border:2px dashed #bfd4ee;background:#f8fbff;border-radius:16px;padding:34px 20px;text-align:center;transition:background .15s,border-color .15s;cursor:pointer}
+    .upload-zone.drag-over{background:#eaf3ff;border-color:#1f5fae}
+    .upload-symbol{width:62px;height:62px;border-radius:18px;background:#e7f1ff;color:#1f5fae;display:grid;place-items:center;font-size:27px;margin:0 auto 14px}
+    .upload-zone h3{font-size:16px;font-weight:800;margin-bottom:7px}
+    .upload-zone p{font-size:12px;color:#6b7280;margin-bottom:14px}
+    .format-chip{display:inline-flex;border:1px solid #e5ebf3;border-radius:8px;padding:5px 8px;background:#fff;color:#566579;font-size:10px;font-weight:700;margin:3px}
+    .selected-file{display:flex;align-items:center;gap:12px;border:1px solid #e7edf5;border-radius:12px;padding:12px;margin-bottom:9px;background:#fff}
+    .selected-file .file-name{overflow-wrap:anywhere}
+    .file-remove{border:0;background:#f4f6f9;color:#7a8798;border-radius:8px;width:32px;height:32px;flex:0 0 auto}
+    .file-remove:hover{background:#fff0ed;color:#c0392b}
+    .upload-empty{padding:24px 12px;color:#8a96a7;text-align:center;font-size:12px}
+    .upload-help{font-size:11px;color:#6b7280;line-height:1.65}
+    .section-step{width:28px;height:28px;display:inline-grid;place-items:center;border-radius:9px;background:#eaf2fc;color:#1f5fae;font-weight:800;margin-right:8px;font-size:12px}
+    .metadata-label{font-size:12px;font-weight:700;color:#374151;margin-bottom:7px}
+    .hint{font-size:11px;color:#7a8798;margin-top:6px}
+    @media(max-width:575px){.upload-zone{padding:26px 14px}.upload-symbol{width:54px;height:54px}}
+  </style>
+</head>
+<body data-page="upload">
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="brand"><div class="brand-mark"><i class="bi bi-layers-half"></i></div><div class="brand-copy"><div class="brand-name">MR DATA BANK</div><span class="brand-sub">Market Research Division</span></div></div>
+    <div class="sidebar-scroll" id="desktopSidebarContent">
+      <div class="nav-caption">WORKSPACE</div>
+      <a class="sidebar-link" href="index.html" data-page="dashboard" title="Dashboard"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+      <a class="sidebar-link" href="data-bank.html" data-page="files" title="File Data"><i class="bi bi-folder2-open"></i><span>File Data</span></a>
+      <a class="sidebar-link" href="upload-files.html" data-page="upload" title="Upload Files"><i class="bi bi-cloud-arrow-up"></i><span>Upload Files</span></a>
+      <a class="sidebar-link" href="categories-management.html" data-page="categories" title="Categories"><i class="bi bi-tags"></i><span>Categories</span></a>
+      <div class="nav-caption">INDUSTRY &amp; OUTREACH</div>
+      <a class="sidebar-link" href="industry-directory.html" data-page="industry" title="Industry Directory"><i class="bi bi-buildings"></i><span>Industry Directory</span></a>
+      <a class="sidebar-link" href="email-communication.html" data-page="email" title="Email Communication"><i class="bi bi-envelope-paper"></i><span>Email Communication</span></a>
+      <div class="nav-caption">MY WORKSPACE</div>
+      <a class="sidebar-link" href="#" data-page="my-uploads" title="My Uploads" data-demo-action="My Uploads will be connected to user accounts later."><i class="bi bi-cloud-upload"></i><span>My Uploads</span></a>
+      <a class="sidebar-link" href="#" data-page="favorites" title="Favorites" data-demo-action="Favorites will be connected to saved records later."><i class="bi bi-star"></i><span>Favorites</span></a>
+      <a class="sidebar-link" href="#" data-page="recent" title="Recently Viewed" data-demo-action="Recently Viewed will be connected to activity history later."><i class="bi bi-clock-history"></i><span>Recently Viewed</span></a>
+      <div class="nav-caption">ADMINISTRATION</div>
+      <a class="sidebar-link" href="user-management.html" data-page="users" title="User Management"><i class="bi bi-people"></i><span>User Management</span></a>
+      <a class="sidebar-link" href="user-management.html#permissions" data-page="permissions" title="Permissions"><i class="bi bi-shield-lock"></i><span>Permissions</span></a>
+      <a class="sidebar-link" href="migration-backup.html" data-page="migration" title="Migration &amp; Backup"><i class="bi bi-arrow-repeat"></i><span>Migration &amp; Backup</span></a>
+      <a class="sidebar-link" href="audit-logs.html" data-page="audit" title="Audit Logs"><i class="bi bi-journal-text"></i><span>Audit Logs</span></a>
+    </div>
+    <div class="sidebar-footer"><div class="d-flex align-items-center gap-2 justify-content-center justify-content-lg-start"><i class="bi bi-shield-check fs-5"></i><div class="sidebar-footer-copy"><div class="fw-bold small text-white">Secure Workspace</div><div class="small">Phase 1 · Pilot UI</div></div></div></div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <button class="icon-btn mobile-menu-button" id="mobileMenuToggle" type="button" aria-label="Open navigation" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></button>
+      <button class="icon-btn d-none d-lg-inline-grid" id="sidebarToggle" type="button" aria-label="Collapse or expand sidebar" title="Collapse sidebar"><i class="bi bi-layout-sidebar-inset"></i></button>
+      <div class="global-search"><i class="bi bi-search"></i><input class="form-control" id="globalSearch" type="search" placeholder="Search files, industries, contacts..." aria-label="Search this page"></div>
+      <div class="topbar-spacer"></div>
+      <div class="notification-wrap"><button class="icon-btn" type="button" data-demo-action="Notifications panel is a frontend demo." aria-label="Notifications"><i class="bi bi-bell"></i></button><span class="notification-dot"></span></div>
+      <div class="dropdown"><button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false"><div class="avatar">SS</div><div class="profile-copy"><div class="profile-name">Soheb Siddique</div><div class="profile-role">Administrator</div></div><i class="bi bi-chevron-down profile-chevron small text-secondary ms-1"></i></button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2"><li><h6 class="dropdown-header">Soheb Siddique</h6></li><li><a class="dropdown-item" href="#" data-demo-action="Profile settings are not connected to a backend yet."><i class="bi bi-person me-2"></i>My Profile</a></li><li><a class="dropdown-item" href="#" data-demo-action="Settings will be available after backend integration."><i class="bi bi-gear me-2"></i>Settings</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-danger" href="MR_Data_Bank_Login_UI/admin-login.html"><i class="bi bi-box-arrow-right me-2"></i>Logout (demo)</a></li></ul>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="page-heading">
+        <div><nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item"><a href="data-bank.html">Data Bank</a></li><li class="breadcrumb-item active" aria-current="page">Upload Files</li></ol></nav>
+          <h1 class="page-title">Upload Files</h1><div class="page-subtitle">Add documents to the Market Research Division repository with the right classification and metadata.</div>
+        </div>
+        <div class="heading-actions d-flex gap-2"><a class="btn btn-soft btn-sm px-3" href="data-bank.html"><i class="bi bi-folder2-open me-1"></i>View Data Bank</a></div>
+      </div>
+
+      <div class="alert alert-primary border-0 d-flex gap-2 align-items-start py-3 mb-4" role="note" style="background:#eaf2fc;color:#234c80">
+        <i class="bi bi-info-circle-fill mt-1"></i><div class="small"><strong>Frontend demo:</strong> files and metadata are saved in this browser and appear in File Data. They are not uploaded to a central server, so they are available only in this browser/profile.</div>
+      </div>
+
+      <form id="uploadForm" novalidate>
+        <section class="upload-setup-panel mb-4" aria-labelledby="uploadSetupTitle">
+          <div class="upload-setup-heading">
+            <div class="upload-setup-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+            <div class="flex-grow-1">
+              <h2 id="uploadSetupTitle">Quick setup</h2>
+              <p>Reuse a saved upload configuration to avoid entering the same details every time.</p>
+            </div>
+            <span class="setup-local-badge"><i class="bi bi-pc-display me-1"></i>Saved in this browser</span>
+          </div>
+          <div class="row g-2 align-items-end">
+            <div class="col-lg-5 col-md-6">
+              <label for="uploadPresetSelect" class="metadata-label">Saved upload setups</label>
+              <select id="uploadPresetSelect" class="form-select">
+                <option value="">Choose a saved setup</option>
+              </select>
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <label for="uploadPresetName" class="metadata-label">Name this setup</label>
+              <input id="uploadPresetName" class="form-control" maxlength="40" placeholder="e.g. Monthly Trade Report" autocomplete="off">
+            </div>
+            <div class="col-lg-3 d-flex gap-2">
+              <button class="btn btn-outline-primary flex-grow-1" type="button" id="applyUploadPresetButton" disabled><i class="bi bi-magic me-1"></i>Apply</button>
+              <button class="btn btn-primary flex-grow-1" type="button" id="saveUploadPresetButton"><i class="bi bi-bookmark-plus me-1"></i>Save</button>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2">
+            <div class="upload-setup-help" id="uploadPresetStatus" aria-live="polite">Save a frequently used category, access level and source to reuse it later.</div>
+            <button class="btn btn-link btn-sm text-danger text-decoration-none p-0" type="button" id="deleteUploadPresetButton" disabled><i class="bi bi-trash3 me-1"></i>Delete selected</button>
+          </div>
+        </section>
+        <div class="row g-4">
+          <div class="col-xl-8">
+            <section class="card-panel mb-4">
+              <div class="panel-header"><div><h2 class="panel-title"><span class="section-step">1</span>Select files</h2><div class="panel-subtitle">Drag files into the box or choose them from your device.</div></div><span class="badge rounded-pill text-bg-light border" id="fileCountBadge">0 files selected</span></div>
+              <div class="panel-body">
+                <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Choose files to upload">
+                  <div class="upload-symbol"><i class="bi bi-cloud-arrow-up"></i></div>
+                  <h3>Drag and drop your files here</h3>
+                  <p>Or click below to browse files on your device.</p>
+                  <button type="button" class="btn btn-primary btn-sm px-4" id="browseFilesButton"><i class="bi bi-folder2-open me-2"></i>Choose files</button>
+                  <input type="file" id="fileInput" class="d-none" multiple accept=".pdf,.xls,.xlsx,.csv,.doc,.docx,.jpg,.jpeg,.png" aria-label="Choose files">
+                  <div class="mt-3">
+                    <span class="format-chip">PDF</span><span class="format-chip">XLS / XLSX</span><span class="format-chip">CSV</span><span class="format-chip">DOC / DOCX</span><span class="format-chip">JPG / JPEG</span><span class="format-chip">PNG</span>
+                  </div>
+                  <div class="upload-zone-footnote"><i class="bi bi-info-circle me-1"></i>Multiple files can be selected together. The classification and metadata below will apply to every file in this batch.</div>
+                </div>
+                <div id="fileList" class="mt-3" aria-live="polite"><div class="upload-empty" id="emptyFileList"><i class="bi bi-files fs-3 d-block mb-2"></i>No files selected yet.</div></div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+                  <div class="upload-help"><i class="bi bi-shield-check me-1"></i>Choose only approved files. Server-side security checks will be required in production.</div>
+                  <button type="button" class="btn btn-link btn-sm text-secondary text-decoration-none px-0" id="clearFilesButton">Clear selection</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="card-panel">
+              <div class="panel-header"><div><h2 class="panel-title"><span class="section-step">2</span>Classify files</h2><div class="panel-subtitle">Add the information users will use to find these files later.</div></div></div>
+              <div class="panel-body">
+                <div class="row g-3">
+                  <div class="col-md-6"><label class="metadata-label" for="mainCategory">Main category <span class="text-danger">*</span></label><select class="form-select" id="mainCategory" required><option value="">Select main category</option></select><div class="invalid-feedback">Please select a main category.</div></div>
+                  <div class="col-md-6"><label class="metadata-label" for="subCategory">Sub-category <span class="text-danger">*</span></label><select class="form-select" id="subCategory" required disabled><option value="">Select main category first</option></select><div class="form-text">Choose an existing sub-category, or request a new one below. New sub-categories require admin approval.</div><div class="invalid-feedback">Please select a valid sub-category for this main category.</div><button class="btn btn-sm btn-outline-primary mt-2" type="button" id="requestSubcategoryButton" disabled><i class="bi bi-plus-circle me-1"></i>Request new sub-category</button></div>
+                  <div class="col-md-6"><label class="metadata-label" for="accessLevel">Access classification <span class="text-danger">*</span></label><select class="form-select" id="accessLevel" required><option value="internal">Internal — authorized MR Division users</option><option value="restricted">Restricted — limited access (requires policy check)</option></select><div class="hint">This selection is a demo field; backend permissions must enforce access.</div></div>
+                  <div class="col-md-6"><label class="metadata-label" for="documentDate">Document date</label><input class="form-control" id="documentDate" type="date"><div class="hint">Optional date of the document, not the upload date.</div></div>
+                  <div class="col-md-6"><label class="metadata-label" for="source">Source / originating organization</label><input class="form-control" id="source" type="text" maxlength="160" placeholder="e.g., source department or organization"></div>
+                  <div class="col-12"><label class="metadata-label" for="description">Description / keywords</label><textarea class="form-control" id="description" rows="3" maxlength="1000" placeholder="Add a short description, reporting period, sector or search keywords."></textarea><div class="d-flex justify-content-between mt-1"><div class="hint">Avoid entering sensitive data in this demo.</div><div class="hint"><span id="descriptionCount">0</span>/1000</div></div></div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="col-xl-4">
+            <section class="card-panel mb-4">
+              <div class="panel-header"><div><h2 class="panel-title"><span class="section-step">3</span>Review upload</h2><div class="panel-subtitle">Check selection and metadata before proceeding.</div></div></div>
+              <div class="panel-body">
+                <div class="d-flex justify-content-between mb-3"><span class="text-secondary small">Selected files</span><strong id="summaryCount">0</strong></div>
+                <div class="d-flex justify-content-between mb-3"><span class="text-secondary small">Total selected size</span><strong id="summarySize">0 B</strong></div>
+                <div class="d-flex justify-content-between mb-3"><span class="text-secondary small">Category path</span><strong class="text-end" id="summaryCategory">Not selected</strong></div>
+                <div class="d-flex justify-content-between mb-3"><span class="text-secondary small">Access classification</span><strong class="text-end" id="summaryAccess">Internal</strong></div>
+                <hr>
+                <div class="upload-readiness" id="uploadReadinessPanel" aria-labelledby="uploadReadinessTitle">
+                  <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                    <h3 id="uploadReadinessTitle"><i class="bi bi-clipboard2-check me-2"></i>Readiness check</h3>
+                    <span class="badge text-bg-warning" id="uploadReadinessBadge">Needs attention</span>
+                  </div>
+                  <div class="progress upload-readiness-progress mb-3" role="progressbar" aria-label="Required upload steps completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="uploadReadinessProgress">
+                    <div class="progress-bar" id="uploadReadinessProgressBar" style="width:0%"></div>
+                  </div>
+                  <div class="readiness-row"><i class="bi bi-circle" id="readinessFilesIcon"></i><span id="readinessFilesText">Select at least one supported file</span><span class="readiness-tag">Required</span></div>
+                  <div class="readiness-row"><i class="bi bi-circle" id="readinessCategoryIcon"></i><span id="readinessCategoryText">Choose a valid category</span><span class="readiness-tag">Required</span></div>
+                  <div class="readiness-row optional"><i class="bi bi-info-circle" id="readinessDetailsIcon"></i><span id="readinessDetailsText">Source and description are optional</span><span class="readiness-tag">Optional</span></div>
+                </div>
+                <div class="upload-help mb-3"><i class="bi bi-check2-circle text-success me-1"></i>Supported file extensions checked in browser</div>
+                <div class="upload-help mb-3"><i class="bi bi-exclamation-triangle text-warning me-1"></i>The filename warning is advisory only. Content inspection, malware scanning, definitive duplicate checks, authorization and storage must be implemented server-side.</div>
+                <button class="btn btn-primary w-100" type="submit" id="prepareUploadButton"><i class="bi bi-clipboard-check me-2"></i>Save files &amp; open All Files</button>
+                <button class="btn btn-light border w-100 mt-2" type="button" id="resetFormButton">Reset form</button>
+                <div class="small mt-3 text-secondary" id="validationMessage" aria-live="polite">Select files, enter metadata, and save to add them to All Files.</div>
+              </div>
+            </section>
+
+            <section class="card-panel">
+              <div class="panel-header"><h2 class="panel-title"><i class="bi bi-list-check me-2 text-primary"></i>Upload workflow</h2></div>
+              <div class="panel-body">
+                <div class="activity-item"><div class="activity-icon"><i class="bi bi-file-earmark-plus"></i></div><div><div class="activity-title">Choose files</div><div class="activity-meta">Select one or multiple supported files.</div></div></div>
+                <div class="activity-item"><div class="activity-icon"><i class="bi bi-tags"></i></div><div><div class="activity-title">Classify and describe</div><div class="activity-meta">Add category and useful metadata.</div></div></div>
+                <div class="activity-item"><div class="activity-icon"><i class="bi bi-shield-check"></i></div><div><div class="activity-title">Server validation (future)</div><div class="activity-meta">Permission, malware, duplicate and integrity checks.</div></div></div>
+                <div class="activity-item"><div class="activity-icon"><i class="bi bi-database-check"></i></div><div><div class="activity-title">Save to Data Bank (future)</div><div class="activity-meta">Generate a File ID and record an audit event.</div></div></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </form>
+      <div class="footer-note d-flex flex-wrap justify-content-between gap-2"><span>MR Data Bank · Market Research Division</span><span>Phase 1 Pilot UI · © <span id="currentYear"></span></span></div>
+    </main>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel"><div class="offcanvas-header border-bottom border-light border-opacity-10"><div class="fw-bold" id="mobileSidebarLabel"><i class="bi bi-layers-half me-2"></i>MR DATA BANK</div><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div><div class="offcanvas-body p-0"><div class="sidebar h-100"><div class="sidebar-scroll" id="mobileSidebarContent"></div></div></div></div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="demoToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true"><div class="d-flex"><div class="toast-body" id="demoToastBody">Demo action</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div></div>
+
+<!-- Request a new sub-category -->
+<div class="modal fade" id="requestSubcategoryModal" tabindex="-1" aria-labelledby="requestSubcategoryTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+    <form id="requestSubcategoryForm" novalidate>
+      <div class="modal-header">
+        <div><h2 class="modal-title fs-5 fw-bold" id="requestSubcategoryTitle">Request new sub-category</h2><p class="small text-secondary mb-0 mt-1">This request will be sent to the admin for approval.</p></div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info small py-2"><i class="bi bi-diagram-3 me-1"></i>Parent category: <strong id="requestSubcategoryParentLabel">Select a main category</strong></div>
+        <div class="mb-3"><label for="newSubcategoryName" class="form-label">Sub-category name <span class="text-danger">*</span></label><input class="form-control" id="newSubcategoryName" maxlength="80" required placeholder="e.g. Organic Cotton"><div class="invalid-feedback">Enter a sub-category name.</div></div>
+        <div class="mb-3"><label for="newSubcategoryCode" class="form-label">Unique code <span class="text-danger">*</span></label><input class="form-control text-uppercase" id="newSubcategoryCode" maxlength="24" pattern="[A-Za-z0-9]+([_-][A-Za-z0-9]+)*" required placeholder="e.g. ORGANIC-COTTON"><div class="form-text">Letters, numbers, hyphens and underscores. A code is suggested from the name.</div><div class="invalid-feedback">Enter a valid unique code.</div></div>
+        <div class="mb-1"><label for="newSubcategoryDescription" class="form-label">Description <span class="text-danger">*</span></label><textarea class="form-control" id="newSubcategoryDescription" rows="3" maxlength="300" required placeholder="Which files should be classified here?"></textarea><div class="form-text">Avoid duplicates; use a clear and specific description.</div><div class="invalid-feedback">Enter a short description.</div></div>
+        <div class="alert alert-warning small mt-3 mb-0"><i class="bi bi-clock-history me-1"></i>The category will be marked <strong>Pending admin approval</strong>. You can continue with this upload; it will remain tagged to the requested category for review.</div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary" id="submitSubcategoryRequest"><i class="bi bi-send me-1"></i>Create request</button></div>
+    </form>
+  </div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/category-catalogue.js"></script><script src="assets/js/file-repository.js"></script><script src="assets/js/upload-files.js"></script>
+</body>
+</html>

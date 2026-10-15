@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MR Data Bank file discovery and management demo">
+  <title>File Data | MR Data Bank</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/layout.css" rel="stylesheet"><link href="assets/css/file-data.css" rel="stylesheet">
+  <style>
+    .filter-label{font-size:10px;color:#6b7788;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:6px}
+    .form-control,.form-select,.input-group-text{font-size:12px;border-color:#e2e8f0}
+    .form-control:focus,.form-select:focus{border-color:#9fc3f1;box-shadow:0 0 0 .2rem rgba(31,95,174,.09)}
+    .table thead th{vertical-align:middle}
+    .sort-button{border:0;background:transparent;padding:0;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;white-space:nowrap}
+    .sort-button:hover{color:#1f5fae}
+    .sort-indicator{font-size:10px;margin-left:4px;color:#1f5fae}
+    .record-check{width:15px;height:15px;cursor:pointer}
+    .file-record{min-width:205px}
+    .action-buttons{display:flex;gap:4px;white-space:nowrap}
+    .action-btn{width:31px;height:31px;display:inline-grid;place-items:center;border:1px solid #e5ebf2;background:#fff;color:#607086;border-radius:8px}
+    .action-btn:hover{color:#1f5fae;background:#edf5ff;border-color:#cce0fb}
+    .action-btn.danger:hover{color:#b42318;background:#fff0ed;border-color:#fad5ce}
+    .file-detail-icon{height:60px;width:54px;border-radius:12px;display:grid;place-items:center;background:#fff0ed;color:#d95d46;font-weight:800;font-size:13px;flex:0 0 auto}
+    .detail-label{color:#7b8796;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:4px}
+    .detail-value{font-size:12px;font-weight:700;overflow-wrap:anywhere}
+    .detail-cell{padding:12px;border:1px solid #edf1f6;border-radius:11px;height:100%;background:#fff}
+    .preview-placeholder{border:1px dashed #d3dfed;background:#f8fbff;border-radius:13px;min-height:145px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#6b7788}
+    .preview-placeholder i{font-size:28px;color:#1f5fae;display:block;margin-bottom:9px}
+    .version-item{display:flex;gap:12px;align-items:flex-start;padding:15px 0;border-bottom:1px solid #edf1f6}
+    .version-item:last-child{border-bottom:0}
+    .version-dot{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#eaf2fc;color:#1f5fae;flex:0 0 auto}
+    .version-tag{font-size:10px;background:#e8f8ef;color:#18804b;border-radius:20px;padding:4px 7px;font-weight:700}
+    .table-empty{padding:45px 20px;text-align:center;color:#7b8796}
+    .table-empty i{font-size:30px;color:#aab8c9}
+    .record-count{font-size:11px;color:#718096}
+    .bulk-bar{display:none;background:#eef5ff;border:1px solid #dceafa;border-radius:12px;padding:10px 13px;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+    .bulk-bar.visible{display:flex}
+    .table-responsive{border-radius:0 0 16px 16px}
+    @media(max-width:767.98px){.page-content{padding:18px 12px}.panel-header{align-items:flex-start;flex-direction:column}.panel-header .header-actions{width:100%;display:flex}.panel-header .header-actions .btn{flex:1}.filter-grid .col{min-width:145px}.file-record{min-width:190px}}
+  </style>
+</head>
+<body data-page="files">
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Main navigation">
+    <div class="brand"><div class="brand-mark"><i class="bi bi-layers-half"></i></div><div class="brand-copy"><div class="brand-name">MR DATA BANK</div><span class="brand-sub">Market Research Division</span></div></div>
+    <div class="sidebar-scroll" id="desktopSidebarContent">
+      <div class="nav-caption">WORKSPACE</div>
+      <a class="sidebar-link" href="index.html" data-page="dashboard" title="Dashboard"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+      <a class="sidebar-link" href="data-bank.html" data-page="files" title="File Data"><i class="bi bi-folder2-open"></i><span>File Data</span></a>
+      <a class="sidebar-link" href="upload-files.html" data-page="upload" title="Upload Files"><i class="bi bi-cloud-arrow-up"></i><span>Upload Files</span></a>
+      <a class="sidebar-link" href="categories-management.html" data-page="categories" title="Categories"><i class="bi bi-tags"></i><span>Categories</span></a>
+      <div class="nav-caption">INDUSTRY &amp; OUTREACH</div>
+      <a class="sidebar-link" href="industry-directory.html" data-page="industry" title="Industry Directory"><i class="bi bi-buildings"></i><span>Industry Directory</span></a>
+      <a class="sidebar-link" href="email-communication.html" data-page="email" title="Email Communication"><i class="bi bi-envelope-paper"></i><span>Email Communication</span></a>
+      <div class="nav-caption">MY WORKSPACE</div>
+      <a class="sidebar-link" href="#" data-page="my-uploads" title="My Uploads" data-demo-action="My Uploads will be connected to user accounts later."><i class="bi bi-cloud-upload"></i><span>My Uploads</span></a>
+      <a class="sidebar-link" href="#" data-page="favorites" title="Favorites" data-demo-action="Favorites will be connected to saved records later."><i class="bi bi-star"></i><span>Favorites</span></a>
+      <a class="sidebar-link" href="#" data-page="recent" title="Recently Viewed" data-demo-action="Recently Viewed will be connected to activity history later."><i class="bi bi-clock-history"></i><span>Recently Viewed</span></a>
+      <div class="nav-caption">ADMINISTRATION</div>
+      <a class="sidebar-link" href="user-management.html" data-page="users" title="User Management"><i class="bi bi-people"></i><span>User Management</span></a>
+      <a class="sidebar-link" href="user-management.html#permissions" data-page="permissions" title="Permissions"><i class="bi bi-shield-lock"></i><span>Permissions</span></a>
+      <a class="sidebar-link" href="migration-backup.html" data-page="migration" title="Migration &amp; Backup"><i class="bi bi-arrow-repeat"></i><span>Migration &amp; Backup</span></a>
+      <a class="sidebar-link" href="audit-logs.html" data-page="audit" title="Audit Logs"><i class="bi bi-journal-text"></i><span>Audit Logs</span></a>
+    </div>
+    <div class="sidebar-footer"><div class="d-flex align-items-center gap-2 justify-content-center justify-content-lg-start"><i class="bi bi-shield-check fs-5"></i><div class="sidebar-footer-copy"><div class="fw-bold small text-white">Secure Workspace</div><div class="small">Phase 1 · Pilot UI</div></div></div></div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <button class="icon-btn mobile-menu-button" id="mobileMenuToggle" type="button" aria-label="Open navigation" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></button>
+      <button class="icon-btn d-none d-lg-inline-grid" id="sidebarToggle" type="button" aria-label="Collapse or expand sidebar" title="Collapse sidebar"><i class="bi bi-layout-sidebar-inset"></i></button>
+      <div class="global-search"><i class="bi bi-search"></i><input class="form-control" id="globalSearch" type="search" placeholder="Search files, industries, contacts..." aria-label="Global search"></div>
+      <div class="topbar-spacer"></div>
+      <div class="notification-wrap"><button class="icon-btn" type="button" data-demo-action="Notifications panel is a frontend demo." aria-label="Notifications"><i class="bi bi-bell"></i></button><span class="notification-dot"></span></div>
+      <div class="dropdown"><button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false"><div class="avatar">SS</div><div class="profile-copy"><div class="profile-name">Soheb Siddique</div><div class="profile-role">Administrator</div></div><i class="bi bi-chevron-down profile-chevron small text-secondary ms-1"></i></button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2"><li><h6 class="dropdown-header">Soheb Siddique</h6></li><li><a class="dropdown-item" href="#" data-demo-action="Profile settings are not connected to a backend yet."><i class="bi bi-person me-2"></i>My Profile</a></li><li><a class="dropdown-item" href="#" data-demo-action="Settings will be available after backend integration."><i class="bi bi-gear me-2"></i>Settings</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-danger" href="MR_Data_Bank_Login_UI/admin-login.html"><i class="bi bi-box-arrow-right me-2"></i>Logout (demo)</a></li></ul>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="page-heading">
+        <div><nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active" aria-current="page">File Data</li></ol></nav>
+          <h1 class="page-title" id="pageTitle">File Data</h1><div class="page-subtitle" id="pageSubtitle">Browse uploaded research files by main category. Select a category to view and filter its files.</div>
+        </div>
+        <div class="heading-actions d-flex gap-2"><button id="exportCsvButton" class="btn btn-soft btn-sm px-3"><i class="bi bi-download me-1"></i>Export CSV</button><a class="btn btn-primary btn-sm px-3" href="upload-files.html"><i class="bi bi-cloud-arrow-up me-1"></i>Upload Files</a></div>
+      </div>
+      <div class="alert alert-primary border-0 d-flex gap-2 align-items-start py-3 mb-4" role="note" style="background:#eaf2fc;color:#234c80"><i class="bi bi-info-circle-fill mt-1"></i><div class="small"><strong>Frontend demo:</strong> category totals combine illustrative sample records and uploads saved in this browser. Uploaded records are not synced to a server or other users.</div></div>
+
+
+      <section id="fileCategoryOverview" class="card-panel mb-4">
+        <div class="panel-header flex-wrap">
+          <div><h2 class="panel-title">Browse by Category</h2><div class="panel-subtitle">Choose a main category to view all its files, including files in its sub-categories.</div></div>
+          <div class="category-overview-search"><i class="bi bi-search"></i><input id="categoryCardSearch" class="form-control" type="search" placeholder="Search categories..." aria-label="Search categories"></div>
+        </div>
+        <div class="panel-body">
+          <div class="row g-3" id="categoryCardsGrid"></div>
+          <div id="categoryOverviewEmpty" class="category-overview-empty d-none"><i class="bi bi-search"></i><strong>No categories match your search</strong><span>Try another category name or sub-category.</span></div>
+          <div class="text-secondary small mt-3" id="categoryOverviewSummary">Select a category to browse its files.</div>
+        </div>
+      </section>
+
+      <section class="card-panel mb-4 d-none" id="fileRecordsSection">
+        <div class="panel-header flex-wrap">
+          <div><div class="file-detail-breadcrumb"><span>File Data</span><i class="bi bi-chevron-right"></i><strong id="selectedCategoryBreadcrumb">Fiber</strong></div><h2 class="panel-title" id="selectedCategoryHeading">Fiber Files</h2><div class="panel-subtitle" id="selectedCategoryDescription">All files in this category and its sub-categories.</div></div>
+          <div class="header-actions d-flex flex-wrap gap-2"><button class="btn btn-light border btn-sm" id="backToCategoriesButton"><i class="bi bi-arrow-left me-1"></i>Back to categories</button><label class="btn btn-light border btn-sm d-flex align-items-center gap-2 mb-0"><input class="form-check-input m-0" type="checkbox" id="showArchived"> Show archived</label><button class="btn btn-light border btn-sm" id="resetFiltersButton"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset filters</button></div>
+        </div>
+
+        <div class="panel-body border-bottom">
+          <div class="row g-3 filter-grid">
+            <div class="col-12 col-md-4"><div class="filter-label">Search files</div><div class="input-group"><span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-secondary"></i></span><input class="form-control border-start-0" id="fileTableSearch" type="search" placeholder="File name, ID, source, keyword..."></div></div>
+            <div class="col-6 col-md-2"><div class="filter-label">Sub-category</div><select class="form-select" id="categoryFilter"><option value="">All files in selected category</option></select></div>
+            <div class="col-6 col-md-2"><div class="filter-label">File type</div><select class="form-select" id="typeFilter"><option value="">All types</option><option>PDF</option><option>XLS</option><option>XLSX</option><option>CSV</option><option>DOC</option><option>DOCX</option><option>JPG</option><option>PNG</option></select></div>
+            <div class="col-6 col-md-2"><div class="filter-label">Status</div><select class="form-select" id="statusFilter"><option value="">All statuses</option><option>Verified</option><option>Under review</option><option>Draft</option><option>Archived</option></select></div>
+            <div class="col-6 col-md-2"><div class="filter-label">Sort order</div><select class="form-select" id="sortOrder"><option value="date-desc">Newest first</option><option value="date-asc">Oldest first</option><option value="name-asc">Name A–Z</option><option value="name-desc">Name Z–A</option><option value="size-desc">Largest first</option><option value="size-asc">Smallest first</option></select></div>
+          </div>
+        </div>
+
+                <div class="panel-body border-bottom pt-0">
+          <div class="row g-3 filter-grid">
+            <div class="col-6 col-md-3"><div class="filter-label">Upload date from</div><input class="form-control" id="fromDateFilter" type="date" aria-label="Upload date from"></div>
+            <div class="col-6 col-md-3"><div class="filter-label">Upload date to</div><input class="form-control" id="toDateFilter" type="date" aria-label="Upload date to"></div>
+            <div class="col-12 col-md-6 d-flex align-items-end"><div class="small text-secondary"><i class="bi bi-funnel me-1"></i>Filters apply only within the selected main category and its sub-categories.</div></div>
+          </div>
+        </div>
+
+<div class="panel-body pb-0">
+          <div class="bulk-bar" id="bulkBar"><div class="small"><strong id="selectedCount">0</strong> record(s) selected</div><div class="d-flex gap-2"><button class="btn btn-soft btn-sm" id="bulkExportButton"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Export selected</button><button class="btn btn-outline-danger btn-sm" id="bulkArchiveButton"><i class="bi bi-archive me-1"></i>Archive selected</button></div></div>
+          <div class="record-count mb-2" id="recordCount" aria-live="polite">Showing sample records</div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table" id="filesTable">
+            <thead><tr>
+              <th class="ps-4"><input class="form-check-input record-check" type="checkbox" id="selectAllRows" aria-label="Select all visible rows"></th>
+              <th><button class="sort-button" data-sort="name">File <i class="bi bi-arrow-down-up sort-indicator"></i></button></th>
+              <th><button class="sort-button" data-sort="fileId">File ID <i class="bi bi-arrow-down-up sort-indicator"></i></button></th>
+              <th><button class="sort-button" data-sort="category">Category path <i class="bi bi-arrow-down-up sort-indicator"></i></button></th>
+              <th>Type / Size</th>
+              <th><button class="sort-button" data-sort="date">Updated <i class="bi bi-arrow-down-up sort-indicator"></i></button></th>
+              <th>Uploaded by</th><th>Status</th><th class="pe-4">Actions</th>
+            </tr></thead>
+            <tbody id="filesTableBody"></tbody>
+          </table>
+          <div class="table-empty d-none" id="emptyTable"><i class="bi bi-search d-block mb-2"></i><strong class="d-block text-dark mb-1">No matching files</strong><span class="small">Try changing your search or filter criteria.</span></div>
+        </div>
+        <div class="panel-body border-top d-flex flex-wrap align-items-center justify-content-between gap-2"><span class="record-count">Sample rows are illustrative; uploads saved in this browser are also listed here.</span><button class="btn btn-light border btn-sm" id="clearSelectionButton">Clear selection</button></div>
+      </section>
+
+      <div class="footer-note d-flex flex-wrap justify-content-between gap-2"><span>MR Data Bank · Market Research Division</span><span>Phase 1 Pilot UI · © <span id="currentYear"></span></span></div>
+    </main>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel"><div class="offcanvas-header border-bottom border-light border-opacity-10"><div class="fw-bold" id="mobileSidebarLabel"><i class="bi bi-layers-half me-2"></i>MR DATA BANK</div><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div><div class="offcanvas-body p-0"><div class="sidebar h-100"><div class="sidebar-scroll" id="mobileSidebarContent"></div></div></div></div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="demoToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true"><div class="d-flex"><div class="toast-body" id="demoToastBody">Demo action</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div></div>
+
+<!-- File metadata preview modal -->
+<div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content border-0 shadow">
+    <div class="modal-header"><div><h2 class="modal-title fs-5 fw-bold" id="filePreviewTitle">File details</h2><div class="small text-secondary mt-1" id="filePreviewSubtitle">Metadata preview</div></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+    <div class="modal-body" id="filePreviewBody"></div>
+    <div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" id="previewDownloadButton"><i class="bi bi-download me-1"></i>Download file</button></div>
+  </div></div>
+</div>
+
+<!-- Version history modal -->
+<div class="modal fade" id="versionHistoryModal" tabindex="-1" aria-labelledby="versionHistoryTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content border-0 shadow">
+    <div class="modal-header"><div><h2 class="modal-title fs-5 fw-bold" id="versionHistoryTitle">Version history</h2><div class="small text-secondary mt-1" id="versionHistorySubtitle">File versions</div></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+    <div class="modal-body"><div class="alert alert-warning small"><i class="bi bi-info-circle me-1"></i>Example version entries for UI demonstration only. The actual files are not available in this frontend.</div><div id="versionHistoryBody"></div></div>
+    <div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Close</button></div>
+  </div></div>
+</div>
+
+<!-- Archive confirmation modal -->
+<div class="modal fade" id="archiveModal" tabindex="-1" aria-labelledby="archiveModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+    <div class="modal-header"><h2 class="modal-title fs-5 fw-bold" id="archiveModalTitle">Archive record?</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+    <div class="modal-body"><p class="mb-2" id="archiveModalText">This will mark the sample record as archived in this browser session only.</p><div class="small text-secondary">No original file or permanent database record will be changed.</div></div>
+    <div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Cancel</button><button class="btn btn-danger" id="confirmArchiveButton"><i class="bi bi-archive me-1"></i>Archive</button></div>
+  </div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/category-catalogue.js"></script><script src="assets/js/file-repository.js"></script><script src="assets/js/data-bank.js"></script>
+</body>
+</html>

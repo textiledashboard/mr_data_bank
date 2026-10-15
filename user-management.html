@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MR Data Bank Admin User Management and Permissions demo">
+<title>User Management &amp; Permissions | MR Data Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="assets/css/layout.css" rel="stylesheet">
+<style>
+.filter-label{font-size:10px;color:#6b7788;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:6px}
+.form-control,.form-select,.input-group-text{font-size:12px;border-color:#e2e8f0}
+.form-control:focus,.form-select:focus{border-color:#9fc3f1;box-shadow:0 0 0 .2rem rgba(31,95,174,.09)}
+.user-stat{padding:17px 19px;height:100%;display:flex;align-items:center;gap:13px}
+.user-stat .stat-icon{width:42px;height:42px;flex:0 0 auto}
+.user-stat .stat-value{font-size:24px;margin-top:3px}
+.user-stat .stat-label{font-size:11px}
+.user-avatar{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#eaf2fc;color:#1f5fae;font-size:11px;font-weight:800;flex:0 0 auto}
+.user-name{font-size:12px;font-weight:800;color:#26374d}
+.user-meta{font-size:10px;color:#7b8796;margin-top:3px;overflow-wrap:anywhere}
+.role-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:5px 8px;font-size:10px;font-weight:700;white-space:nowrap}
+.role-admin{background:#f0ebff;color:#6941c6}
+.role-researcher{background:#eaf2fc;color:#1f5fae}
+.role-readonly{background:#edf1f6;color:#637083}
+.permission-tag{display:inline-block;font-size:9px;padding:4px 6px;border-radius:5px;background:#eef5ff;color:#275b9c;font-weight:700;margin:2px 2px 2px 0;white-space:nowrap}
+.permission-tag.all{background:#e8f8ef;color:#18804b}
+.status-active{background:#e8f8ef;color:#18804b}
+.status-inactive{background:#edf1f6;color:#637083}
+.status-pending{background:#fff5df;color:#9a6700}
+.record-check{width:15px;height:15px;cursor:pointer}
+.action-buttons{display:flex;gap:4px;white-space:nowrap}
+.action-btn{width:31px;height:31px;display:inline-grid;place-items:center;border:1px solid #e5ebf2;background:#fff;color:#607086;border-radius:8px}
+.action-btn:hover{color:#1f5fae;background:#edf5ff;border-color:#cce0fb}
+.action-btn.danger:hover{color:#b42318;background:#fff0ed;border-color:#fad5ce}
+.bulk-bar{display:none;background:#eef5ff;border:1px solid #dceafa;border-radius:12px;padding:10px 13px;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.bulk-bar.visible{display:flex}
+.sector-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sector-check{border:1px solid #e5ebf3;border-radius:9px;padding:8px 9px;display:flex;align-items:center;gap:7px;font-size:11px;cursor:pointer}
+.sector-check:has(input:checked){background:#eef5ff;border-color:#b8d3f3;color:#1f5fae;font-weight:700}
+.sector-check input{margin:0}
+.permission-box{border:1px solid #e7edf5;border-radius:12px;padding:15px;background:#fbfcfe;height:100%}
+.permission-box .title{font-size:12px;font-weight:800;margin-bottom:5px}
+.permission-box .desc{font-size:10px;color:#7b8796;line-height:1.55}
+.permission-divider{border-top:1px solid #e9eef5;margin:14px 0}
+.form-hint{font-size:10px;color:#7b8796;margin-top:5px}
+.table-empty{padding:45px 20px;text-align:center;color:#7b8796}
+.table-empty i{font-size:30px;color:#aab8c9}
+.small-note{font-size:11px;color:#6b7780;line-height:1.6}
+@media(max-width:767.98px){.page-content{padding:18px 12px}.panel-header{align-items:flex-start;flex-direction:column}.panel-header .header-actions{width:100%;display:flex}.panel-header .header-actions .btn{flex:1}.sector-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.user-stat{padding:14px 12px;gap:9px}.user-stat .stat-value{font-size:21px}}
+</style>
+</head>
+<body data-page="users">
+<div class="app-shell">
+<aside class="sidebar" aria-label="Main navigation">
+  <div class="brand"><div class="brand-mark"><i class="bi bi-layers-half"></i></div><div class="brand-copy"><div class="brand-name">MR DATA BANK</div><span class="brand-sub">Market Research Division</span></div></div>
+  <div class="sidebar-scroll" id="desktopSidebarContent">
+    <div class="nav-caption">WORKSPACE</div>
+    <a class="sidebar-link" href="index.html" data-page="dashboard" title="Dashboard"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+    <a class="sidebar-link" href="data-bank.html" data-page="files" title="File Data"><i class="bi bi-folder2-open"></i><span>File Data</span></a>
+    <a class="sidebar-link" href="upload-files.html" data-page="upload" title="Upload Files"><i class="bi bi-cloud-arrow-up"></i><span>Upload Files</span></a>
+    <a class="sidebar-link" href="categories-management.html" data-page="categories" title="Categories"><i class="bi bi-tags"></i><span>Categories</span></a>
+    <div class="nav-caption">INDUSTRY &amp; OUTREACH</div>
+    <a class="sidebar-link" href="industry-directory.html" data-page="industry" title="Industry Directory"><i class="bi bi-buildings"></i><span>Industry Directory</span></a>
+    <a class="sidebar-link" href="email-communication.html" data-page="email" title="Email Communication"><i class="bi bi-envelope-paper"></i><span>Email Communication</span></a>
+    <div class="nav-caption">MY WORKSPACE</div>
+    <a class="sidebar-link" href="#" data-page="my-uploads" title="My Uploads" data-demo-action="My Uploads will be connected to user accounts later."><i class="bi bi-cloud-upload"></i><span>My Uploads</span></a>
+    <a class="sidebar-link" href="#" data-page="favorites" title="Favorites" data-demo-action="Favorites will be connected to saved records later."><i class="bi bi-star"></i><span>Favorites</span></a>
+    <a class="sidebar-link" href="#" data-page="recent" title="Recently Viewed" data-demo-action="Recently Viewed will be connected to activity history later."><i class="bi bi-clock-history"></i><span>Recently Viewed</span></a>
+    <div class="nav-caption">ADMINISTRATION</div>
+    <a class="sidebar-link" href="user-management.html" data-page="users" title="User Management"><i class="bi bi-people"></i><span>User Management</span></a>
+    <a class="sidebar-link" href="user-management.html#permissions" data-page="permissions" title="Permissions"><i class="bi bi-shield-lock"></i><span>Permissions</span></a>
+    <a class="sidebar-link" href="migration-backup.html" data-page="migration" title="Migration &amp; Backup"><i class="bi bi-arrow-repeat"></i><span>Migration &amp; Backup</span></a>
+    <a class="sidebar-link" href="audit-logs.html" data-page="audit" title="Audit Logs"><i class="bi bi-journal-text"></i><span>Audit Logs</span></a>
+  </div>
+  <div class="sidebar-footer"><div class="d-flex align-items-center gap-2 justify-content-center justify-content-lg-start"><i class="bi bi-shield-check fs-5"></i><div class="sidebar-footer-copy"><div class="fw-bold small text-white">Secure Workspace</div><div class="small">Phase 1 · Pilot UI</div></div></div></div>
+</aside>
+
+<div class="main-area">
+<header class="topbar">
+  <button class="icon-btn mobile-menu-button" id="mobileMenuToggle" type="button" aria-label="Open navigation" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></button>
+  <button class="icon-btn d-none d-lg-inline-grid" id="sidebarToggle" type="button" aria-label="Collapse or expand sidebar" title="Collapse sidebar"><i class="bi bi-layout-sidebar-inset"></i></button>
+  <div class="global-search"><i class="bi bi-search"></i><input class="form-control" id="globalSearch" type="search" placeholder="Search users, emails, categories..." aria-label="Global search"></div>
+  <div class="topbar-spacer"></div>
+  <div class="notification-wrap"><button class="icon-btn" type="button" data-demo-action="Notifications panel is a frontend demo." aria-label="Notifications"><i class="bi bi-bell"></i></button><span class="notification-dot"></span></div>
+  <div class="dropdown"><button class="profile-button" type="button" data-bs-toggle="dropdown" aria-expanded="false"><div class="avatar">SS</div><div class="profile-copy"><div class="profile-name">Soheb Siddique</div><div class="profile-role">Administrator</div></div><i class="bi bi-chevron-down profile-chevron small text-secondary ms-1"></i></button>
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2"><li><h6 class="dropdown-header">Soheb Siddique</h6></li><li><a class="dropdown-item" href="#" data-demo-action="Profile settings are not connected to a backend yet."><i class="bi bi-person me-2"></i>My Profile</a></li><li><a class="dropdown-item" href="#" data-demo-action="Settings will be available after backend integration."><i class="bi bi-gear me-2"></i>Settings</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-danger" href="MR_Data_Bank_Login_UI/admin-login.html"><i class="bi bi-box-arrow-right me-2"></i>Logout (demo)</a></li></ul>
+  </div>
+</header>
+
+<main class="page-content">
+<div class="page-heading">
+  <div><nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active" aria-current="page">User Management</li></ol></nav>
+    <h1 class="page-title">User Management &amp; Permissions</h1><div class="page-subtitle">Manage employee accounts and control what each authorized user can upload or send.</div>
+  </div>
+  <div class="heading-actions d-flex gap-2"><button class="btn btn-soft btn-sm px-3" id="exportUsersButton"><i class="bi bi-download me-1"></i>Export CSV</button><button class="btn btn-primary btn-sm px-3" id="addUserButton"><i class="bi bi-person-plus me-1"></i>Add User</button></div>
+</div>
+
+<div class="alert alert-primary border-0 d-flex gap-2 align-items-start py-3 mb-4" role="note" style="background:#eaf2fc;color:#234c80">
+  <i class="bi bi-info-circle-fill mt-1"></i><div class="small"><strong>Demo mode:</strong> account and permission changes are stored in this page session only. No real accounts, credentials or server permissions are created or changed.</div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-3"><div class="card-panel user-stat"><div class="stat-icon"><i class="bi bi-people"></i></div><div><div class="stat-label">Total users</div><div class="stat-value" id="statTotalUsers">0</div></div></div></div>
+  <div class="col-6 col-xl-3"><div class="card-panel user-stat"><div class="stat-icon" style="background:#e8f8ef;color:#198754"><i class="bi bi-person-check"></i></div><div><div class="stat-label">Active users</div><div class="stat-value" id="statActiveUsers">0</div></div></div></div>
+  <div class="col-6 col-xl-3"><div class="card-panel user-stat"><div class="stat-icon" style="background:#f0ebff;color:#6941c6"><i class="bi bi-shield-lock"></i></div><div><div class="stat-label">Administrators</div><div class="stat-value" id="statAdmins">0</div></div></div></div>
+  <div class="col-6 col-xl-3"><div class="card-panel user-stat"><div class="stat-icon" style="background:#fff4df;color:#9a6700"><i class="bi bi-envelope-check"></i></div><div><div class="stat-label">Bulk-email authorized</div><div class="stat-value" id="statEmailAuthorized">0</div></div></div></div>
+</div>
+
+<div class="row g-4 mb-4" id="permissions">
+  <div class="col-lg-6"><div class="card-panel h-100"><div class="panel-header"><div><h2 class="panel-title"><i class="bi bi-shield-check me-2 text-primary"></i>Permission policy overview</h2><div class="panel-subtitle">Example access model used for this pilot.</div></div></div><div class="panel-body">
+    <div class="permission-box mb-3"><div class="d-flex align-items-center gap-2"><span class="role-pill role-admin"><i class="bi bi-shield-fill-check"></i>Administrator</span><strong class="small">Full administrative access</strong></div><div class="desc mt-2">Manage users, assign category permissions, configure directory settings, review migration/audit records and authorize bulk communication.</div></div>
+    <div class="permission-box mb-3"><div class="d-flex align-items-center gap-2"><span class="role-pill role-researcher"><i class="bi bi-person-workspace"></i>Researcher</span><strong class="small">Common Data Bank access</strong></div><div class="desc mt-2">Search and view records according to policy. Upload rights are restricted to categories assigned by an administrator.</div></div>
+    <div class="permission-box"><div class="d-flex align-items-center gap-2"><span class="role-pill role-readonly"><i class="bi bi-eye"></i>Read-only</span><strong class="small">View-only access</strong></div><div class="desc mt-2">May search or view permitted records but cannot upload or send bulk communications.</div></div>
+    <div class="small-note mt-3"><i class="bi bi-exclamation-triangle me-1 text-warning"></i>Front-end controls are not security boundaries. Laravel must enforce every role and permission on the server for every API request.</div>
+  </div></div></div>
+  <div class="col-lg-6"><div class="card-panel h-100"><div class="panel-header"><div><h2 class="panel-title"><i class="bi bi-folder-check me-2 text-primary"></i>Upload permission principles</h2><div class="panel-subtitle">Recommended rules for implementing category-based access.</div></div></div><div class="panel-body">
+    <div class="activity-item"><div class="activity-icon"><i class="bi bi-person-gear"></i></div><div><div class="activity-title">Admin assigns one or more categories</div><div class="activity-meta">Examples: Cotton, Handloom, Silk, International Trade or Research &amp; Reports.</div></div></div>
+    <div class="activity-item"><div class="activity-icon"><i class="bi bi-cloud-arrow-up"></i></div><div><div class="activity-title">Backend validates every upload</div><div class="activity-meta">Reject unauthorized categories server-side, even if someone changes browser code.</div></div></div>
+    <div class="activity-item"><div class="activity-icon"><i class="bi bi-envelope-lock"></i></div><div><div class="activity-title">Bulk email requires a separate permission</div><div class="activity-meta">Only explicitly authorized users may prepare/send campaigns, subject to policy and approval workflow.</div></div></div>
+    <div class="activity-item"><div class="activity-icon"><i class="bi bi-person-x"></i></div><div><div class="activity-title">Deactivation preserves user history</div><div class="activity-meta">Existing uploads and audit history should remain; deactivated accounts cannot sign in.</div></div></div>
+  </div></div></div>
+</div>
+
+<section class="card-panel mb-4">
+  <div class="panel-header flex-wrap"><div><h2 class="panel-title">User accounts</h2><div class="panel-subtitle">Search users, inspect upload permissions and manage account status.</div></div><div class="header-actions d-flex gap-2"><label class="btn btn-light border btn-sm d-flex align-items-center gap-2 mb-0"><input class="form-check-input m-0" type="checkbox" id="showInactiveToggle"> Show inactive</label><button class="btn btn-light border btn-sm" id="resetUserFilters"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset filters</button></div></div>
+  <div class="panel-body border-bottom"><div class="row g-3">
+    <div class="col-12 col-md-4"><div class="filter-label">Search</div><div class="input-group"><span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-secondary"></i></span><input class="form-control border-start-0" id="userSearch" type="search" placeholder="Name, email or department"></div></div>
+    <div class="col-6 col-md-2"><div class="filter-label">Role</div><select class="form-select" id="roleFilter"><option value="">All roles</option><option>Administrator</option><option>Researcher</option><option>Read-only</option></select></div>
+    <div class="col-6 col-md-2"><div class="filter-label">Status</div><select class="form-select" id="userStatusFilter"><option value="">All statuses</option><option>Active</option><option>Inactive</option></select></div>
+    <div class="col-6 col-md-2"><div class="filter-label">Bulk email</div><select class="form-select" id="emailPermissionFilter"><option value="">All</option><option value="yes">Authorized</option><option value="no">Not authorized</option></select></div>
+    <div class="col-6 col-md-2"><div class="filter-label">Upload access</div><select class="form-select" id="uploadPermissionFilter"><option value="">All</option><option value="yes">Has categories</option><option value="no">No upload access</option></select></div>
+  </div></div>
+  <div class="panel-body pb-0"><div class="bulk-bar" id="userBulkBar"><div class="small"><strong id="selectedUsersCount">0</strong> user(s) selected</div><div class="d-flex gap-2"><button class="btn btn-soft btn-sm" id="exportSelectedUsers"><i class="bi bi-file-earmark-spreadsheet me-1"></i>Export selected</button><button class="btn btn-outline-danger btn-sm" id="deactivateSelectedUsers"><i class="bi bi-person-x me-1"></i>Deactivate selected</button></div></div><div class="small text-secondary mb-2" id="userRecordCount">Loading users…</div></div>
+  <div class="table-responsive"><table class="table" id="usersTable"><thead><tr><th class="ps-4"><input type="checkbox" id="selectAllUsers" class="form-check-input record-check" aria-label="Select all visible users"></th><th>User</th><th>Role</th><th>Upload categories</th><th>Bulk email</th><th>Status</th><th>Last updated</th><th class="pe-4">Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table><div class="table-empty d-none" id="emptyUsers"><i class="bi bi-people d-block mb-2"></i><strong class="d-block text-dark mb-1">No matching user accounts</strong><span class="small">Try changing the filters.</span></div></div>
+  <div class="panel-body border-top d-flex flex-wrap justify-content-between align-items-center gap-2"><span class="small text-secondary">Demo account records · Passwords are not stored or shown here.</span><button class="btn btn-light border btn-sm" id="clearUserSelection">Clear selection</button></div>
+</section>
+<div class="footer-note d-flex flex-wrap justify-content-between gap-2"><span>MR Data Bank · Market Research Division</span><span>Phase 1 Pilot UI · © <span id="currentYear"></span></span></div>
+</main>
+</div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel"><div class="offcanvas-header border-bottom border-light border-opacity-10"><div class="fw-bold" id="mobileSidebarLabel"><i class="bi bi-layers-half me-2"></i>MR DATA BANK</div><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div><div class="offcanvas-body p-0"><div class="sidebar h-100"><div class="sidebar-scroll" id="mobileSidebarContent"></div></div></div></div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div id="demoToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true"><div class="d-flex"><div class="toast-body" id="demoToastBody">Demo action</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div></div></div>
+
+<div class="modal fade" id="userFormModal" tabindex="-1" aria-labelledby="userFormTitle" aria-hidden="true"><div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><div class="modal-content border-0 shadow"><form id="userForm" novalidate>
+<div class="modal-header"><div><h2 class="modal-title fs-5 fw-bold" id="userFormTitle">Add user</h2><div class="small text-secondary mt-1">Set account details, role and category-based permissions.</div></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+<div class="modal-body">
+  <div class="alert alert-warning py-2 small"><i class="bi bi-info-circle me-1"></i>This form will not create a real login. In production, credentials must be provisioned securely and passwords must never be emailed or stored in plain text.</div>
+  <input type="hidden" id="userRecordId">
+  <h3 class="h6 fw-bold mb-3"><i class="bi bi-person-badge me-2 text-primary"></i>Account details</h3>
+  <div class="row g-3">
+    <div class="col-md-6"><label class="form-label small fw-bold" for="userFullName">Full name <span class="text-danger">*</span></label><input id="userFullName" class="form-control" maxlength="140" required placeholder="Employee name"><div class="invalid-feedback">Enter the employee's name.</div></div>
+    <div class="col-md-6"><label class="form-label small fw-bold" for="userEmail">Official email <span class="text-danger">*</span></label><input id="userEmail" class="form-control" type="email" maxlength="180" required placeholder="name@organization.gov.in"><div class="invalid-feedback">Enter a valid email address.</div></div>
+    <div class="col-md-4"><label class="form-label small fw-bold" for="userEmployeeId">Employee ID / reference</label><input id="userEmployeeId" class="form-control" maxlength="80" placeholder="Optional reference"></div>
+    <div class="col-md-4"><label class="form-label small fw-bold" for="userDepartment">Department / assignment</label><input id="userDepartment" class="form-control" maxlength="140" placeholder="e.g. Market Research Division"></div>
+    <div class="col-md-4"><label class="form-label small fw-bold" for="userPhone">Contact number</label><input id="userPhone" class="form-control" maxlength="40" placeholder="Optional"></div>
+    <div class="col-md-4"><label class="form-label small fw-bold" for="userRole">Role <span class="text-danger">*</span></label><select id="userRole" class="form-select" required><option value="">Select role</option><option>Administrator</option><option>Researcher</option><option>Read-only</option></select><div class="invalid-feedback">Choose a role.</div></div>
+    <div class="col-md-4"><label class="form-label small fw-bold" for="userStatus">Account status</label><select id="userStatus" class="form-select"><option>Active</option><option>Inactive</option></select></div>
+    <div class="col-md-4"><label class="form-label small fw-bold" for="userLastUpdatedBy">Updated by</label><input id="userLastUpdatedBy" class="form-control" value="Soheb Siddique" maxlength="100"></div>
+  </div>
+  <div class="permission-divider"></div>
+  <h3 class="h6 fw-bold mb-2"><i class="bi bi-folder-check me-2 text-primary"></i>Category-based upload permissions</h3>
+  <p class="small text-secondary mb-3">Select one or more categories for a Researcher. Administrators have full administrative access; Read-only users cannot upload. These selections are examples until server-side rules are implemented.</p>
+  <div class="sector-grid" id="categoryPermissionGrid">
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Production"> Production</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Domestic Market"> Domestic Market</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="International Trade"> International Trade</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Cotton"> Cotton</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="MMF"> MMF</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Silk"> Silk</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Wool"> Wool</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Handloom"> Handloom</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Apparel"> Apparel</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Technical Textiles"> Technical Textiles</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Processing"> Processing</label>
+    <label class="sector-check"><input type="checkbox" name="uploadCategories" value="Research & Reports"> Research &amp; Reports</label>
+  </div>
+  <div class="form-hint mt-2" id="categoryPermissionHint">Select allowed upload categories for the user.</div>
+  <div class="permission-divider"></div>
+  <h3 class="h6 fw-bold mb-3"><i class="bi bi-envelope-lock me-2 text-primary"></i>Communication and data access</h3>
+  <div class="row g-3">
+    <div class="col-md-6"><div class="permission-box"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="canSendBulkEmail"><label class="form-check-label fw-bold small" for="canSendBulkEmail">Authorize bulk email campaigns</label></div><div class="desc mt-2">Separate permission for preparing bulk communications. Does not send any email from this demo.</div></div></div>
+    <div class="col-md-6"><div class="permission-box"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="canDownloadFiles" checked><label class="form-check-label fw-bold small" for="canDownloadFiles">Allow file downloads</label></div><div class="desc mt-2">A demonstration access flag. Backend policies must define which records may be downloaded.</div></div></div>
+    <div class="col-12"><label class="form-label small fw-bold" for="userAdminNotes">Admin notes</label><textarea class="form-control" id="userAdminNotes" rows="2" maxlength="600" placeholder="Optional notes about the assignment or approval."></textarea></div>
+  </div>
+</div>
+<div class="modal-footer"><button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary" id="saveUserButton"><i class="bi bi-check2-circle me-1"></i>Save user</button></div>
+</form></div></div></div>
+
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsTitle" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"><div class="modal-content border-0 shadow">
+<div class="modal-header"><div><h2 class="modal-title fs-5 fw-bold" id="userDetailsTitle">User details</h2><div class="small text-secondary mt-1" id="userDetailsSubtitle"></div></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+<div class="modal-body" id="userDetailsBody"></div>
+<div class="modal-footer"><button type="button" class="btn btn-light border" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary" id="editFromDetailsButton"><i class="bi bi-pencil-square me-1"></i>Edit permissions</button></div>
+</div></div></div>
+
+<div class="modal fade" id="userConfirmModal" tabindex="-1" aria-labelledby="userConfirmTitle" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow">
+<div class="modal-header"><h2 class="modal-title fs-5 fw-bold" id="userConfirmTitle">Confirm account change</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+<div class="modal-body"><p class="mb-1" id="userConfirmText"></p><div class="small text-secondary">This only changes sample data in this page session; no real account access changes.</div></div>
+<div class="modal-footer"><button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button><button type="button" class="btn btn-danger" id="confirmUserAction">Confirm</button></div>
+</div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/user-management.js"></script>
+</body>
+</html>
